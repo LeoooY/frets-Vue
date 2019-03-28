@@ -5,28 +5,40 @@
       <router-link to="/about">About</router-link>
     </div>
     <router-view/> -->
-    <string class="" :stringNote="el" :key="idx" v-for="(el,idx) in EMPTY_SCALES"></string>
+    <string class="" :stringNote="el" :key="idx" v-for="(el,idx) in EMPTY_SCALES" @changeBase="emit=>changeBase(emit,el)"></string>
+                                                                                  <!-- @changeBase="emit=>changeBase(emit,el)" 
+                                                                                        changeBase(arguments,el)
+                                                                                  -->
     <div class="fret-index">
       <span  :key="idx" v-for="(el,idx) in 16">{{idx}}</span>
     </div>
-    <major></major>
+    <baseNote :bNote="basenote"></baseNote>
   </div>
 </template>
 <script>
   import string from './components/string.vue'
-  import major from './components/major.vue'
+  import baseNote from './components/baseNote.vue'
 
   export default {
     name: 'app',
-    components: {
-      string,
-      major
-    },
+    
     data() {
       return {
         EMPTY_SCALES: ['E', 'B', 'G', 'D', 'A', 'E'],
-        STRING_DIFFS: [5, 4, 5, 5, 5],
-        NOTE_DIFFS: [2, 2, 1, 2, 2, 2, 1]
+        STRING_DIFFS: [5, 4, 5, 5, 5],        
+        basenote:'F'  
+      }
+    },
+    components: {
+      string,
+      baseNote
+    },
+    methods: {
+      changeBase: function(segNote,el){
+        
+        console.log('品格音：',segNote,'弦：',el);
+        this.basenote=segNote;
+        
       }
     }
   }

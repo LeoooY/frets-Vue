@@ -1,18 +1,20 @@
 <template>
-  <div id='major'>
-    1 = <sup v-if="true">#</sup> F
+  <div id='baseNote'>
+    1 = <sup v-if="false">#</sup> {{bNote}}
   </div>
 </template>
 
 <script>
   export default {
-    name: 'major'
+    name: 'major',
+    props:['bNote'],
+
 
   }
 </script>
 
 <style scoped>
-  #major {
+  #baseNote {
     font-family: serif;
     font-style: italic;
     padding-bottom: 20px;
