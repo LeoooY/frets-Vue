@@ -1,8 +1,8 @@
 <template>
   <div id='string'>
     <span class="string-note">{{strNoteCode}}</span>
-    <div class="string-segment" v-for="(el,idx) in 16" :key="idx" @click="changeBase(segNotes[idx])">
-      <span>{{segNotes[idx] }}</span>
+    <div class="string-segment" v-for="(el,idx) in 16" :key="idx" @click="changeBase(segNotes[idx].sup+segNotes[idx].note,idx)">
+      <span v-if="rs.indexOf(idx)!==-1">{{segNotes[idx].sup+segNotes[idx].note+segNotes[idx].ncode }}</span>
     </div>
   </div>
 </template>
@@ -14,7 +14,9 @@
     data() {
       return {
         NOTE_DIFFS: [2, 1, 2, 2, 1, 2, 2],
-        segNotes:[]
+        normalNoteDiff:[2,2,1,2,2,2,1],
+        segNotes:[],
+        rs:[]
       }
     },
     computed: {
@@ -25,8 +27,44 @@
       
     },
     methods: {
-      changeBase: function (segNote) {
 
+      changeBase: function (segNote,idx) {
+        let temp=idx;
+        this.rs=[];
+        this.rs.push(temp);
+        let len=this.normalNoteDiff.length;
+
+        for(let i=0;i<len;i++){
+          
+          temp+=this.normalNoteDiff[i]
+          if(temp>15){
+            temp=idx;
+            break;
+          }
+          this.rs.push(temp);
+          if(i===len-1){
+            i=0
+          }
+        }
+        for(let i=len-1;i>-1;i--){
+                  
+          temp-=this.normalNoteDiff[i]
+          if(temp<-1){
+            break;
+          }  
+          this.rs.unshift(temp);
+          if(i=-1){
+            i=len-1;
+          }
+        }
+        console.log("音阶：",this.rs);
+        console.log(idx,this.segNotes);
+        this.$set(this.segNotes,idx,{
+          sup:this.segNotes[idx].sup,
+          note:this.segNotes[idx].note,
+          ncode:this.segNotes[idx].ncode,
+          show:true
+        })
         this.$emit('changeBase', segNote);
 
       },
@@ -40,11 +78,29 @@
           }
           diff=this.NOTE_DIFFS[(segNoteCode-65)%7];
           if(diff%2===1){
-            this.segNotes.push(String.fromCharCode(segNoteCode))
+            this.segNotes.push(
+              {
+                note:String.fromCharCode(segNoteCode),
+                ncode:segNoteCode,
+                sup:''
+              }
+            )
             
           }else{
-            this.segNotes.push(String.fromCharCode(segNoteCode))
-            this.segNotes.push(`#`+String.fromCharCode(segNoteCode))
+            this.segNotes.push(
+              {
+                note:String.fromCharCode(segNoteCode),
+                ncode:segNoteCode,
+                sup:''
+              }
+            )
+            this.segNotes.push(
+              {
+                note:String.fromCharCode(segNoteCode),
+                ncode:segNoteCode,
+                sup:'#'
+              }
+            )
             
           }
           segNoteCode++
